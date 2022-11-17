@@ -1,0 +1,242 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, height=device-height, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
+    <title>로그인을 해 주세요</title>
+</head>
+<style>
+    @import url("https://fonts.googleapis.com/css?family=Roboto:400,400i,700");
+
+    *{
+        box-sizing: border-box;
+    }
+
+    html{
+        width: 100%;
+        height: 100%;
+    }
+
+    body {
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+        font-family: Roboto, sans-serif;
+        position: relative;
+    }
+
+    h1 {
+        padding: 10px;
+    }
+
+    .video-container {
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+    }
+
+    #main{
+        position: absolute;
+        top:0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    iframe {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100vw;
+        height: 100vh;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+    }
+
+    #text {
+        position: absolute;
+        color: #FFFFFF;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    @media (min-aspect-ratio: 16/9) {
+        .video-container iframe {
+            height: 56.25vw;
+        }
+    }
+
+    @media (max-aspect-ratio: 16/9) {
+        .video-container iframe {
+            width: 177.78vh;
+        }
+    }
+
+    @import url(https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css);
+    * {
+        font-family: NanumSquare
+    }
+
+    header {
+        text-align: center;
+        margin: 40px auto 40px auto;
+        font-size: 30px;
+        position: absolute;
+        z-index: 1;
+        left: 50%;
+        top : 0;
+        transform: translateX(-50%);
+
+    }
+
+    .login_box {
+        background-color: white;
+        position: absolute;
+        width: 500px;
+        margin: 20px auto 20px auto;
+        left: 50%;
+        top: 50%;
+        box-shadow: 0px 0px 3px 0px #fdb7b7;
+        padding: 20px;
+                transform: translate(-50%, -50%);
+    }
+
+    .title {
+        font-size: 30px;
+        text-align: center;
+    }
+
+    .input-box {
+        position: relative;
+    }
+
+    .input-box > input {
+        background: transparent;
+        border: none;
+        border-bottom: solid 1px #fdb7b7;
+        padding: 20px 0px 5px 0px;
+        font-size: 14pt;
+        width: 100%;
+    }
+
+    input::placeholder {
+        color: transparent;
+    }
+
+    input:placeholder-shown + label {
+        color: #f5a0a0;
+        font-size: 10pt;
+        top: 15px;
+
+    }
+
+    input:focus + label, label {
+        color: #fdb7b7;
+        font-size: 10pt;
+        pointer-events: none;
+        position: absolute;
+        left: 0px;
+        top: 0px;
+    }
+
+    input:focus, input:not(:placeholder-shown) {
+        border-bottom: solid 1px #e7a8a8;
+        outline: none;
+    }
+
+    input[type=submit] {
+        background-color: #703838;
+        border: none;
+        color: white;
+        border-radius: 5px;
+        width: 100%;
+        height: 35px;
+        font-size: 14pt;
+        margin-top: 100px;
+    }
+
+    .login_box > button {
+        background-color: #fdb7b7;
+        width: 100%;
+        color: #050404;
+        padding: 20px;
+        font-size: 20px;
+
+    }
+
+
+    a {
+        text-decoration-line: none;
+    }
+
+</style>
+<script>
+
+    function login() {
+        $.ajax({
+            type: "POST",
+            url: "/login2",
+            data: {id_give: $('#user_id').val(), pw_give: $('#user_pw').val()},
+            success: function (response) {
+                if (response['result'] == 'success') {
+                    // 로그인이 정상적으로 되면, 토큰을 받아옵니다.
+                    // 이 토큰을 mytoken이라는 키 값으로 쿠키에 저장합니다.
+                    $.cookie('mytoken', response['token']);
+                    alert('로그인 완료!')
+                    window.location.href = '/'
+                } else {
+                    // 로그인이 안되면 에러메시지를 띄웁니다.
+                    alert(response['msg'])
+                }
+            }
+        })
+
+    }
+
+
+</script>
+<body>
+<header>
+    <h1>Study With Me</h1>
+</header>
+
+
+<div id="main">
+
+    <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/R7TXQF8bW_Y?autoplay=1&mute=1"
+                title="YouTube video player" frameborder="0"
+                allow="accelerometer; autoplay; mute; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+    </div>
+
+    <div class="login_box">
+        <p class="title">Log in</p>
+        <div class="input-box">
+            <input id="user_id" type="text" name="user_id" placeholder="아이디">
+            <label for="username">아이디</label>
+        </div>
+
+        <div class="input-box">
+            <input id="user_pw" type="password" name="user_pw" placeholder="비밀번호">
+            <label for="password">비밀번호</label>
+        </div>
+
+        <button onclick="login()" style='cursor:pointer'>로그인</button>
+        <button type="button"
+                onclick="location.href='http://localhost:63343/SWM/templates/register.html?_ijt=5pmr6sf77rvcedu0g871hk3va8&_ij_reload=RELOAD_ON_SAVE'"
+                target="_blank"
+        >회원가입</button>
+         <button type="button"
+                onclick="location.href='http://localhost:63343/SWM/templates/change_pw.html?_ijt=q2blamhbk726p967irdbrrfliq&_ij_reload=RELOAD_ON_SAVE'"
+                target="_blank"
+        >비밀번호변경</button>
+
+    </div>
+</div>
+</body>
+</html>
